@@ -1,0 +1,179 @@
+#include <iostream>
+#include <iomanip>
+#include "Func.hpp"
+using namespace std;
+using namespace ayama;
+
+
+int main()
+{
+    int n, p;
+    
+    cout << "n="; cin >> n;
+
+    int** a = new int* [n], sum_pos;
+    for (int i = 0; i < n; i++)
+        a[i] = new int[n];
+   
+    initialize(a, n);
+
+    showing(a, n);
+
+    for (int j = 0; j < n; j++)
+    {
+        sum_pos = SumPosElColumn(a, n, j);
+        cout << "Column" << j + 1 << ":  sum: " << sum_pos << "\n";
+    }
+    cout << "\n";
+    if (int(abs(SumDigits(isMaxi(a, n)) - SumDigits(isMini(a, n)))) <= 2)
+    {
+        p = SwapColumns(a, n);
+
+        if (p)
+        {
+            showing(a, n);
+
+            for (int j = 0; j < n; j++)
+            {
+                sum_pos = SumPosElColumn(a, n, j);
+                cout << "Column" << j + 1 << ":  sum: " << sum_pos << "\n";
+            }
+
+            
+        }
+        else
+        {
+            showing(a, n);
+            cout << "Matrix is sorted";
+        }
+    }
+    else
+    {
+        showing(a, n);
+        cout << "Matrix is not sorted\n";
+    }
+    
+
+
+    /*cout << (SumDigits(isMaxi(a, n)) - SumDigits(isMini(a, n))) << endl;
+    cout << isMaxi(a, n) << endl;
+    cout << isMini(a, n) << endl;
+    cout << SumDigits(isMaxi(a, n)) << endl;
+    cout << SumDigits(isMini(a, n)) << endl;*/
+
+    //отладка
+
+    for (int i = 0; i < n; i++)
+        delete[]a[i];
+    delete[]a;
+    system("pause");
+    return 0;
+}
+
+#pragma once
+namespace ayama
+{
+	int** sozdanie(int n);
+	void initialize(int** a, int n);
+	void showing(int** a, int n);
+	int SumPosElColumn(int** a, int n, int idx);
+	int SwapColumns(int** a, int n);
+	int isMaxi(int** a, int n);
+	int isMini(int** a, int n);
+	int SumDigits(int n);
+}
+
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+namespace ayama
+{
+    int SumPosElColumn(int** a, int n, int idx)
+    {
+        int sum_pos = 0.;
+        for (int i = 0; i < n; i++)
+            sum_pos += a[i][idx];
+        return sum_pos;
+    }
+
+    int SwapColumns(int** a, int n)
+    {
+        int p = 0;
+        for (int j = 1; j < n; j++)
+            for (int k = 0; k < n - j; k++)
+                if (SumPosElColumn(a, n, k) > SumPosElColumn(a, n, k + 1))
+                {
+                    p = 1;
+                    for (int i = 0; i < n; i++)
+                        swap(a[i][k], a[i][k + 1]);
+                }
+        return p;
+    }
+
+
+    int isMaxi(int** a, int n)
+    {
+        int maxi = a[0][0];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (a[i][j] > maxi)
+                    maxi = a[i][j];
+            }
+        }
+        return maxi;
+    }
+
+    int isMini(int** a, int n)
+    {
+        int mini = a[0][0];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (a[i][j] < mini)
+                    mini = a[i][j];
+            }
+        }
+        return mini;
+    }
+
+    int SumDigits(int n)
+    {
+        int sum = 0;
+        int p = abs(n);
+        while (p > 0)
+        {
+            sum += p % 10;
+            p /= 10;
+        }
+        return sum;
+    }
+
+    void initialize(int** a, int n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                cin >> a[i][j];
+            }
+            cout << endl;
+        }
+    }
+    void showing(int** a, int n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                cout << setw(5) << a[i][j];
+            }
+            cout << "\n";
+        }
+    }
+
+    
+}
